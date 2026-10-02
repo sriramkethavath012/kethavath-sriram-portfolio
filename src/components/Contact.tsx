@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, MapPin, Send, CheckCircle2, AlertCircle, Copy, Check } from 'lucide-react';
 import { personalInfo, socialLinks } from '../data/portfolioData';
 import { GitHubLogo, LinkedInLogo, InstagramLogo } from './BrandIcons';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FormState {
   name: string;
@@ -18,6 +19,7 @@ interface FormErrors {
 }
 
 export const Contact: React.FC = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<FormState>({
     name: '',
     email: '',
@@ -67,9 +69,12 @@ export const Contact: React.FC = () => {
     setSubmitStatus('idle');
 
     try {
-      // Simulated client-side submission with realistic response delay
-      // Ready to be linked to an email provider API or backend endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Direct client fallback to mailto so messages are genuinely sent through the user's email client
+      const subjectEncoded = encodeURIComponent(formData.subject.trim() || 'Portfolio Inquiry');
+      const bodyEncoded = encodeURIComponent(
+        `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\nMessage:\n${formData.message.trim()}`
+      );
+      window.location.href = `mailto:${personalInfo.email}?subject=${subjectEncoded}&body=${bodyEncoded}`;
 
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
@@ -98,13 +103,13 @@ export const Contact: React.FC = () => {
         <div className="mb-14">
           <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-2">
             <span className="w-6 h-[1px] bg-cyan-400/60" />
-            <span>Direct Communication</span>
+            <span>{t.contact.sectionBadge}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Let's Connect
+            Let's Build Something Together
           </h2>
           <p className="text-slate-300 text-base sm:text-lg mt-2 max-w-2xl">
-            I'm always interested in learning, building, and connecting with people in technology.
+            I'm always interested in learning, building, and connecting with people in technology. Reach out directly or send a message below.
           </p>
         </div>
 
@@ -249,21 +254,21 @@ export const Contact: React.FC = () => {
           <div className="lg:col-span-7">
             <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-[#0a0f1d] to-[#070b13] border border-white/[0.08] shadow-xl">
               <h3 className="text-lg font-bold text-white tracking-wide mb-1">
-                Send a Message
+                {t.contact.sendMessage}
               </h3>
               <p className="text-xs sm:text-sm text-slate-400 mb-6">
-                Fill out the form below. I will respond to your inquiry as promptly as possible.
+                {t.contact.formSubtitle}
               </p>
 
               {/* Status Alert Banners */}
               {submitStatus === 'success' && (
-                <div className="mb-6 p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs sm:text-sm flex items-start gap-3 animate-fade-in">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="mb-6 p-4 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs sm:text-sm flex items-start gap-3 animate-fade-in">
+                  <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-white">Thank you for your message!</p>
-                    <p className="text-emerald-300/90 mt-0.5">
-                      Your inquiry has been registered. You can also reach me directly at{' '}
-                      <a href={`mailto:${personalInfo.email}`} className="underline font-mono">
+                    <p className="font-semibold text-white">Opening Email Client...</p>
+                    <p className="text-cyan-300/90 mt-0.5">
+                      Your inquiry has been formatted. If your email application didn't launch automatically, please reach out directly at{' '}
+                      <a href={`mailto:${personalInfo.email}`} className="underline font-mono text-white font-semibold">
                         {personalInfo.email}
                       </a>.
                     </p>
@@ -288,14 +293,14 @@ export const Contact: React.FC = () => {
                   {/* Name Input */}
                   <div>
                     <label htmlFor="contact-name" className="block text-xs font-mono uppercase text-slate-300 mb-1.5">
-                      Your Name <span className="text-cyan-400">*</span>
+                      {t.contact.nameLabel} <span className="text-cyan-400">*</span>
                     </label>
                     <input
                       id="contact-name"
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Jane Doe"
+                      placeholder={t.contact.namePlaceholder}
                       className={`w-full px-4 py-2.5 rounded-xl bg-slate-900/90 border text-white text-sm placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
                         errors.name ? 'border-rose-500/60' : 'border-white/[0.08]'
                       }`}
@@ -309,14 +314,14 @@ export const Contact: React.FC = () => {
                   {/* Email Input */}
                   <div>
                     <label htmlFor="contact-email" className="block text-xs font-mono uppercase text-slate-300 mb-1.5">
-                      Your Email <span className="text-cyan-400">*</span>
+                      {t.contact.emailLabel} <span className="text-cyan-400">*</span>
                     </label>
                     <input
                       id="contact-email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="jane@example.com"
+                      placeholder={t.contact.emailPlaceholder}
                       className={`w-full px-4 py-2.5 rounded-xl bg-slate-900/90 border text-white text-sm placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
                         errors.email ? 'border-rose-500/60' : 'border-white/[0.08]'
                       }`}
@@ -331,14 +336,14 @@ export const Contact: React.FC = () => {
                 {/* Subject Input */}
                 <div>
                   <label htmlFor="contact-subject" className="block text-xs font-mono uppercase text-slate-300 mb-1.5">
-                    Subject <span className="text-cyan-400">*</span>
+                    {t.contact.subjectLabel} <span className="text-cyan-400">*</span>
                   </label>
                   <input
                     id="contact-subject"
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder="Internship opportunity / Collaboration / Academic query"
+                    placeholder={t.contact.subjectPlaceholder}
                     className={`w-full px-4 py-2.5 rounded-xl bg-slate-900/90 border text-white text-sm placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
                       errors.subject ? 'border-rose-500/60' : 'border-white/[0.08]'
                     }`}
@@ -352,14 +357,14 @@ export const Contact: React.FC = () => {
                 {/* Message Input */}
                 <div>
                   <label htmlFor="contact-message" className="block text-xs font-mono uppercase text-slate-300 mb-1.5">
-                    Message <span className="text-cyan-400">*</span>
+                    {t.contact.messageLabel} <span className="text-cyan-400">*</span>
                   </label>
                   <textarea
                     id="contact-message"
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Hello Sriram, I saw your portfolio and would like to talk about..."
+                    placeholder={t.contact.messagePlaceholder}
                     className={`w-full px-4 py-2.5 rounded-xl bg-slate-900/90 border text-white text-sm placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all resize-y ${
                       errors.message ? 'border-rose-500/60' : 'border-white/[0.08]'
                     }`}
@@ -380,12 +385,12 @@ export const Contact: React.FC = () => {
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                        <span>Sending Message...</span>
+                        <span>{t.contact.sending}</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Send Message</span>
+                        <span>{t.contact.sendButton}</span>
                       </>
                     )}
                   </button>

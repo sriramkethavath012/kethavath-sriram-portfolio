@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
-import { personalInfo, navItems } from '../data/portfolioData';
+import { Menu, X, ArrowUpRight, Search } from 'lucide-react';
+import { personalInfo, navItems, socialLinks } from '../data/portfolioData';
+import { GitHubLogo, LinkedInLogo, InstagramLogo } from './BrandIcons';
+import { ThemeToggle } from './ThemeToggle';
+import { LanguageToggle } from './LanguageToggle';
+import { useLanguage } from '../context/LanguageContext';
 
 interface NavbarProps {
   activeSection: string;
+  onOpenCommandPalette?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
+export const Navbar: React.FC<NavbarProps> = ({ activeSection, onOpenCommandPalette }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
+
+  const navLabelMap: Record<string, string> = {
+    home: t.nav.home,
+    about: t.nav.about,
+    skills: t.nav.skills,
+    roadmap: t.nav.roadmap,
+    projects: t.nav.projects,
+    'ai-lab': t.nav.ailab || 'AI Lab',
+    education: t.nav.education,
+    certificates: t.nav.certificates,
+    resume: t.nav.resume,
+    contact: t.nav.contact,
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -96,6 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             {navItems.map((item) => {
               const sectionId = item.href.replace('#', '');
               const isActive = activeSection === sectionId;
+              const label = navLabelMap[sectionId] || item.label;
               return (
                 <a
                   key={item.href}
@@ -107,7 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                       : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
                   }`}
                 >
-                  {item.label}
+                  {label}
                   {isActive && (
                     <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
                   )}
@@ -116,20 +136,88 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             })}
           </nav>
 
-          {/* Right Action: Let's Connect CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* Right Action: Command Palette, Social Icons, Language, Theme, & Let's Connect */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3">
+            {/* Command Palette Trigger */}
+            {onOpenCommandPalette && (
+              <button
+                type="button"
+                onClick={onOpenCommandPalette}
+                className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/[0.1] text-xs font-mono text-slate-300 hover:text-white transition-all"
+                title="Search portfolio (Ctrl+K or Cmd+K)"
+                aria-label="Open command palette"
+              >
+                <Search className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-[11px] text-slate-400 hidden xl:inline">Search</span>
+                <kbd className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-white/[0.08]">
+                  ⌘K
+                </kbd>
+              </button>
+            )}
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-1 pl-1 border-l border-white/[0.08]">
+              <a
+                href={socialLinks.github.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.05] transition-colors"
+                aria-label="Open GitHub profile in a new tab"
+                title="GitHub"
+              >
+                <GitHubLogo className="w-4 h-4" />
+              </a>
+              <a
+                href={socialLinks.linkedin.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-[#0a66c2] hover:bg-white/[0.05] transition-colors"
+                aria-label="Open LinkedIn profile in a new tab"
+                title="LinkedIn"
+              >
+                <LinkedInLogo className="w-4 h-4" />
+              </a>
+              <a
+                href={socialLinks.instagram.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-pink-400 hover:bg-white/[0.05] transition-colors"
+                aria-label="Open Instagram profile in a new tab"
+                title="Instagram"
+              >
+                <InstagramLogo className="w-4 h-4" />
+              </a>
+            </div>
+
+            <LanguageToggle />
+            <ThemeToggle />
+
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, '#contact')}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-900 bg-gradient-to-r from-cyan-400 to-blue-400 hover:from-cyan-300 hover:to-blue-300 rounded-lg shadow-sm shadow-cyan-500/25 transition-all duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-400"
             >
-              <span>Let's Connect</span>
+              <span>{t.nav.letsConnect}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="flex lg:hidden">
+          {/* Mobile Right Controls: Search, Language, Theme, & Hamburger */}
+          <div className="flex items-center gap-1.5 lg:hidden">
+            {onOpenCommandPalette && (
+              <button
+                type="button"
+                onClick={onOpenCommandPalette}
+                className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.08]"
+                aria-label="Open command search"
+              >
+                <Search className="w-5 h-5 text-cyan-400" />
+              </button>
+            )}
+
+            <LanguageToggle />
+            <ThemeToggle />
+
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -150,7 +238,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="w-full bg-[#0a0f1d] border-b border-white/[0.1] px-6 py-6 shadow-2xl flex flex-col gap-2"
+            className="w-full bg-[#0a0f1d] border-b border-white/[0.1] px-6 py-6 shadow-2xl flex flex-col gap-2 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-[11px] font-mono text-cyan-400 uppercase tracking-widest mb-1">
@@ -159,6 +247,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             {navItems.map((item) => {
               const sectionId = item.href.replace('#', '');
               const isActive = activeSection === sectionId;
+              const label = navLabelMap[sectionId] || item.label;
               return (
                 <a
                   key={item.href}
@@ -170,19 +259,59 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                       : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span>{item.label}</span>
-                  {isActive && <span className="text-xs font-mono text-cyan-400">CURRENT</span>}
+                  <span>{label}</span>
+                  {isActive && <span className="text-xs font-mono text-cyan-400">{t.nav.current}</span>}
                 </a>
               );
             })}
 
-            <div className="pt-4 mt-2 border-t border-white/[0.08]">
+            <div className="pt-4 mt-2 border-t border-white/[0.08] flex flex-col gap-3">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-mono text-slate-400">{t.common.language}</span>
+                <LanguageToggle showFullLabel={true} />
+              </div>
+
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-mono text-slate-400">{t.common.appearance}</span>
+                <ThemeToggle showLabel={true} />
+              </div>
+
+              <div className="flex items-center justify-center gap-4 py-2 border-t border-white/[0.04]">
+                <a
+                  href={socialLinks.github.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-slate-300 hover:text-white bg-slate-900 border border-white/[0.06]"
+                  aria-label="GitHub profile"
+                >
+                  <GitHubLogo className="w-4 h-4" />
+                </a>
+                <a
+                  href={socialLinks.linkedin.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-slate-300 hover:text-[#0a66c2] bg-slate-900 border border-white/[0.06]"
+                  aria-label="LinkedIn profile"
+                >
+                  <LinkedInLogo className="w-4 h-4" />
+                </a>
+                <a
+                  href={socialLinks.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-slate-300 hover:text-pink-400 bg-slate-900 border border-white/[0.06]"
+                  aria-label="Instagram profile"
+                >
+                  <InstagramLogo className="w-4 h-4" />
+                </a>
+              </div>
+
               <a
                 href="#contact"
                 onClick={(e) => handleNavClick(e, '#contact')}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-900 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-lg shadow-md"
               >
-                <span>Let's Connect</span>
+                <span>{t.nav.letsConnect}</span>
                 <ArrowUpRight className="w-4 h-4" />
               </a>
             </div>

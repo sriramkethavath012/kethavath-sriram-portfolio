@@ -13,8 +13,14 @@ import {
   BrainCircuit,
   Layers,
   Filter,
+  GitBranch,
+  Github,
+  Sparkles,
+  ArrowUpRight,
 } from 'lucide-react';
 import { skillCategories } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
+import { SkillDetailModal, SkillDetail } from './SkillDetailModal';
 
 // Map iconName strings to Lucide components
 const iconMap: Record<string, React.ElementType> = {
@@ -30,10 +36,14 @@ const iconMap: Record<string, React.ElementType> = {
   GitFork,
   BrainCircuit,
   Layers,
+  GitBranch,
+  Github,
 };
 
 export const Skills: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [activeSkillModal, setActiveSkillModal] = useState<SkillDetail | null>(null);
+  const { t } = useLanguage();
 
   const filteredCategories =
     selectedCategory === 'all'
@@ -48,13 +58,13 @@ export const Skills: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-2">
               <span className="w-6 h-[1px] bg-cyan-400/60" />
-              <span>Technical Competencies</span>
+              <span>{t.skills.sectionBadge}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Technical Skills
+              {t.skills.title}
             </h2>
             <p className="text-slate-400 text-sm mt-2 max-w-xl">
-              Foundational languages, paradigms, and systems studied through university coursework and hands-on coding practice.
+              {t.skills.subtitle}
             </p>
           </div>
 
@@ -110,13 +120,23 @@ export const Skills: React.FC = () => {
                 {cat.skills.map((skill, sIdx) => {
                   const Icon = iconMap[skill.iconName] || Terminal;
                   return (
-                    <div
+                    <button
                       key={sIdx}
-                      className="group p-5 rounded-2xl bg-gradient-to-b from-[#0a0f1d] to-[#070b13] border border-white/[0.06] hover:border-cyan-500/30 transition-all duration-200 shadow-md hover:-translate-y-1 flex flex-col justify-between"
+                      type="button"
+                      onClick={() =>
+                        setActiveSkillModal({
+                          name: skill.name,
+                          category: cat.title,
+                          description: skill.description,
+                          icon: Icon,
+                        })
+                      }
+                      className="group p-5 rounded-2xl bg-gradient-to-b from-[#0a0f1d] to-[#070b13] border border-white/[0.06] hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between text-left cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none"
+                      aria-label={`View details for ${skill.name} in ${cat.title}`}
                     >
-                      <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex items-start justify-between gap-3 mb-3 w-full">
                         <div className="flex items-center gap-3">
-                          <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-cyan-400 group-hover:scale-105 group-hover:bg-cyan-500/20 transition-all">
+                          <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/50 transition-all duration-300">
                             <Icon className="w-5 h-5" />
                           </div>
                           <div>
@@ -128,17 +148,18 @@ export const Skills: React.FC = () => {
                             </span>
                           </div>
                         </div>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                       </div>
 
-                      <p className="text-xs text-slate-400 leading-relaxed">
+                      <p className="text-xs text-slate-400 leading-relaxed mb-2">
                         {skill.description}
                       </p>
 
-                      <div className="mt-4 pt-3 border-t border-white/[0.04] flex items-center justify-between text-[11px] font-mono text-slate-500">
-                        <span>Core Concept</span>
-                        <span className="text-cyan-400/80 group-hover:text-cyan-300">Curriculum Verified</span>
+                      <div className="mt-4 pt-3 border-t border-white/[0.04] flex items-center justify-between text-[11px] font-mono text-slate-500 w-full">
+                        <span>Click for overview</span>
+                        <span className="text-cyan-400/80 group-hover:text-cyan-300">Active Learning</span>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -153,6 +174,12 @@ export const Skills: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Skill Detail Modal */}
+      <SkillDetailModal
+        skill={activeSkillModal}
+        onClose={() => setActiveSkillModal(null)}
+      />
     </section>
   );
 };

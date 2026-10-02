@@ -133,8 +133,10 @@ export const NeuralVisual: React.FC = () => {
       time += 0.015;
       ctx.clearRect(0, 0, width, height);
 
+      const isLightMode = document.documentElement.classList.contains('light');
+
       // Draw subtle background grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+      ctx.strokeStyle = isLightMode ? 'rgba(15, 23, 42, 0.05)' : 'rgba(255, 255, 255, 0.025)';
       ctx.lineWidth = 1;
       const gridSize = 40;
       for (let x = 0; x < width; x += gridSize) {
@@ -181,10 +183,10 @@ export const NeuralVisual: React.FC = () => {
         ctx.lineTo(target.x, target.y);
 
         if (isHoveredLayer) {
-          ctx.strokeStyle = 'rgba(6, 182, 212, 0.45)';
+          ctx.strokeStyle = isLightMode ? 'rgba(2, 132, 199, 0.75)' : 'rgba(6, 182, 212, 0.45)';
           ctx.lineWidth = 1.4;
         } else {
-          ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
+          ctx.strokeStyle = isLightMode ? 'rgba(100, 116, 139, 0.28)' : 'rgba(148, 163, 184, 0.12)';
           ctx.lineWidth = 0.8;
         }
         ctx.stroke();

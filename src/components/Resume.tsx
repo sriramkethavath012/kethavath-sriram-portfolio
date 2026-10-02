@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { FileText, Download, Eye, CheckCircle2, ArrowRight } from 'lucide-react';
 import { personalInfo } from '../data/portfolioData';
 import { ResumeModal } from './ResumeModal';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Resume: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <section id="resume" className="py-20 lg:py-28 relative scroll-mt-16 bg-[#070a12]/60">
@@ -16,15 +18,15 @@ export const Resume: React.FC = () => {
           <div className="relative z-10 max-w-3xl">
             <div className="inline-flex items-center gap-2 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-3">
               <span className="w-6 h-[1px] bg-cyan-400/60" />
-              <span>Curriculum Vitae</span>
+              <span>{t.resume.sectionBadge}</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4">
-              My Resume
+              {t.resume.title}
             </h2>
 
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-8">
-              Explore my education, technical skills, projects, certifications, and professional profile.
+              {t.resume.subtitle}
             </p>
 
             {/* Feature Checklist */}
@@ -55,7 +57,7 @@ export const Resume: React.FC = () => {
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-blue-400 hover:from-cyan-300 hover:to-blue-300 rounded-xl shadow-lg shadow-cyan-500/20 transition-all hover:-translate-y-0.5"
               >
                 <Eye className="w-4 h-4" />
-                <span>View Resume</span>
+                <span>{t.resume.previewModal}</span>
               </button>
 
               <a
@@ -64,7 +66,7 @@ export const Resume: React.FC = () => {
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-600 rounded-xl transition-all hover:-translate-y-0.5"
               >
                 <Download className="w-4 h-4 text-cyan-400" />
-                <span>Download Resume</span>
+                <span>{t.resume.downloadPDF}</span>
               </a>
             </div>
 

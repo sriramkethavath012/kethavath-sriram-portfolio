@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { personalInfo, socialLinks } from '../data/portfolioData';
 import { GitHubLogo, LinkedInLogo, InstagramLogo } from './BrandIcons';
 import { NeuralVisual } from './NeuralVisual';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
   onOpenResumeModal?: () => void;
@@ -11,6 +12,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenResumeModal }) => {
   const shouldReduceMotion = useReducedMotion();
+  const { t } = useLanguage();
 
   const handleScrollToProjects = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,63 +40,73 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResumeModal }) => {
             transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="lg:col-span-7 flex flex-col items-start space-y-6"
           >
-            {/* Small student badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-mono tracking-wide shadow-sm">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-mono tracking-wide shadow-sm">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span>{personalInfo.badge}</span>
+              <span>Exploring AI • Building Software • Learning Continuously</span>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-2">
               <p className="text-base sm:text-lg font-medium text-slate-400">
-                Hi, I'm
+                {t.hero.greeting}
               </p>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
                 {personalInfo.name}
               </h1>
+              <div className="text-lg sm:text-xl font-mono text-cyan-400">
+                B.Tech CSE (AI & ML)
+              </div>
               <div className="text-xl sm:text-2xl md:text-3xl font-semibold bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-300 bg-clip-text text-transparent">
-                {personalInfo.role}
+                Aspiring Software Engineer | AI & ML Enthusiast
               </div>
             </div>
 
             {/* Description */}
             <p className="text-base sm:text-lg text-slate-300/90 leading-relaxed max-w-2xl">
-              {personalInfo.description}
+              {t.hero.description}
             </p>
 
             {/* Main Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-3 pt-2 w-full sm:w-auto">
               <a
                 href="#projects"
                 onClick={handleScrollToProjects}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-blue-400 hover:from-cyan-300 hover:to-blue-300 rounded-xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/35 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-blue-400 hover:from-cyan-300 hover:to-blue-300 rounded-xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/35 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
               >
-                <span>View My Projects</span>
+                <span>{t.hero.exploreProjects}</span>
                 <ArrowDown className="w-4 h-4" />
               </a>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="flex items-center gap-2">
                 <a
                   href={personalInfo.resumePath}
                   download="Kethavath_Sriram_Resume.pdf"
-                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-slate-200 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-500 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-slate-200 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-500 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <Download className="w-4 h-4 text-cyan-400" />
-                  <span>Download Resume</span>
+                  <span>{t.hero.downloadResume}</span>
                 </a>
 
                 {onOpenResumeModal && (
                   <button
                     type="button"
                     onClick={onOpenResumeModal}
-                    title="Quick preview resume"
+                    title={t.hero.previewResume}
                     className="p-3 text-slate-400 hover:text-cyan-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition-colors"
-                    aria-label="Preview Resume in Modal"
+                    aria-label={t.hero.previewResume}
                   >
                     <ExternalLink className="w-4 h-4" />
                   </button>
                 )}
               </div>
+
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 hover:border-cyan-400/60 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <span>Let's Connect</span>
+              </a>
             </div>
 
             {/* Official Social Profile Buttons */}

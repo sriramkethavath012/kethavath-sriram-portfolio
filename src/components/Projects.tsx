@@ -3,9 +3,11 @@ import { Sparkles, Info } from 'lucide-react';
 import { projectsData, Project } from '../data/portfolioData';
 import { ProjectCard } from './ProjectCard';
 import { ProjectModal } from './ProjectModal';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Projects: React.FC = () => {
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
+  const { t } = useLanguage();
 
   return (
     <section id="projects" className="py-20 lg:py-28 relative scroll-mt-16">
@@ -15,13 +17,13 @@ export const Projects: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-2">
               <span className="w-6 h-[1px] bg-cyan-400/60" />
-              <span>Technical Works & Prototypes</span>
+              <span>{t.projects.sectionBadge}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Featured Projects
+              {t.projects.title}
             </h2>
             <p className="text-slate-400 text-sm mt-2 max-w-xl">
-              Software and machine learning systems structured with clean problem statements, reproducible architectures, and modular codebases.
+              {t.projects.subtitle}
             </p>
           </div>
 

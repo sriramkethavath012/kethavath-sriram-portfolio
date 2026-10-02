@@ -2,8 +2,23 @@ import React from 'react';
 import { ArrowUp, ArrowUpRight, Mail } from 'lucide-react';
 import { personalInfo, navItems, socialLinks } from '../data/portfolioData';
 import { GitHubLogo, LinkedInLogo, InstagramLogo } from './BrandIcons';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
+  const navLabelMap: Record<string, string> = {
+    home: t.nav.home,
+    about: t.nav.about,
+    skills: t.nav.skills,
+    roadmap: t.nav.roadmap,
+    projects: t.nav.projects,
+    education: t.nav.education,
+    certificates: t.nav.certificates,
+    resume: t.nav.resume,
+    contact: t.nav.contact,
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -44,6 +59,10 @@ export const Footer: React.FC = () => {
               {personalInfo.role} · {personalInfo.tagline}
             </p>
 
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/20 text-xs font-mono text-cyan-300">
+              <span>Learning | Coding | Creating</span>
+            </div>
+
             <p className="text-xs sm:text-sm text-slate-400 max-w-md leading-relaxed">
               Focused on algorithmic problem solving, software engineering fundamentals, and practical machine learning applications. Open to student collaborations and software engineering internships.
             </p>
@@ -64,19 +83,23 @@ export const Footer: React.FC = () => {
           {/* 3. Navigation links */}
           <div className="lg:col-span-4 space-y-3">
             <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400">
-              Navigation
+              {t.footer.quickLinks}
             </h4>
             <div className="grid grid-cols-2 gap-2.5 text-xs sm:text-sm">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
-                  className="text-slate-400 hover:text-cyan-300 transition-colors py-1"
-                >
-                  {item.label}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                const sectionId = item.href.replace('#', '');
+                const label = navLabelMap[sectionId] || item.label;
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    className="text-slate-400 hover:text-cyan-300 transition-colors py-1"
+                  >
+                    {label}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -88,7 +111,7 @@ export const Footer: React.FC = () => {
               className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-white/[0.08] hover:border-cyan-500/30 text-xs font-mono text-slate-300 hover:text-cyan-300 transition-all hover:-translate-y-0.5"
               aria-label="Scroll back to top of the page"
             >
-              <span>Back to top</span>
+              <span>{t.common.backToTop}</span>
               <ArrowUp className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -100,14 +123,14 @@ export const Footer: React.FC = () => {
             <div>
               <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-1">
                 <span className="w-4 h-[1px] bg-cyan-400" />
-                <span>Official Profiles</span>
+                <span>{t.footer.officialProfiles}</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-                Connect With Me
+                {t.footer.connectWithMe}
               </h3>
             </div>
             <span className="text-xs text-slate-500 hidden sm:inline font-mono">
-              Live Verified Channels
+              {t.footer.liveVerified}
             </span>
           </div>
 
@@ -287,7 +310,7 @@ export const Footer: React.FC = () => {
 
           {/* Copyright */}
           <p className="text-xs text-slate-500 font-mono">
-            © 2026 Kethavath Sriram. All rights reserved.
+            © 2026 Kethavath Sriram. {t.footer.allRightsReserved}
           </p>
         </div>
       </div>
